@@ -1,718 +1,97 @@
-package bianyi;
-
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Main implements ActionListener {
-	//ÏÂÃæÊÇËÄ¸ö¹Ø¼ü×Ö±í
-	String Dkeyword[] = {"char","double","enum","float","int","long","short","signed","struct","unsigned","union","void"};
-	String control[] = {"break","case","continue","default","do","else","for","goto","if","return","switch","while"};
-	String Skeyword[] = {"auto","const","extern","register","static"}; 
-	String Okeyword[] = {"sizeof","typedef","volatile"};
+    //åˆ›å»ºç•Œé¢ç»„ä»¶
+    JFrame jf;
+    JPanel jp;
+    JTextArea jta;
+    JButton jb;
+    JCheckBox jcb;
+    //    JPanel jp1, jp2;
+    String[] head1 = {"å•è¯åºå·", "ç±»åˆ«", "å•è¯"};
+    String[] head2 = {"é”™è¯¯è¡Œ", "é”™è¯¯"};
+    JTable table1, table2;
+    JScrollPane jsp1, jsp2, jsp0;
+    DefaultTableModel dm1, dm2;
+    DefaultTableCellRenderer dtcr;
 
-	String jiefu = "[{|}|(|)]";  //½ç·û
-	String single = "[;|:|,]";   //µ¥¸öµÄ×Ö·û
-	String number = "[0-9]";     //µ¥¸öÊı×Ö£¬ÓÃÓÚÅĞ¶ÏÊı×Ö£¨Êı×ÖµÄ¿ªÍ·Ò»¶¨ÊÇµ¥¸öÊı×Ö£©
-	
-	//´´½¨½çÃæ×é¼ş
-	JFrame jf;
-	JPanel jp;
-	JTextArea jta;
-	JButton jb;
-	JCheckBox jcb;
-	JPanel jp1,jp2;
-	String[] head1 = {"µ¥´ÊĞòºÅ","Àà±ğ","µ¥´Ê"};
-	String[] head2 = {"´íÎóĞĞ","´íÎó"};
-	JTable table1,table2;
-	JScrollPane jsp1,jsp2,jsp0;
-	DefaultTableModel dm1,dm2;
-	DefaultTableCellRenderer dtcr;
-	ArrayList<String[]> al,error;
-	
-	/**
-	 * ¹¹Ôì·½·¨³õÊ¼»¯½çÃæ
-	 */
-	public Main(){
-	jf = new JFrame();
-	jf.setTitle("´Ê·¨·ÖÎöÆ÷");
-	jta = new JTextArea(10,10);
-	jta.setLineWrap(true);
-	jta.setWrapStyleWord(true);
-	jb  = new JButton("´Ê·¨·ÖÎö");
-	jcb = new JCheckBox("ÖĞÎÄÏÔÊ¾µ¥´ÊÀà±ğ");
-	jp = new JPanel();
-	
-	table1 = new JTable();
-	table2 = new JTable();
-	jsp0 = new JScrollPane(jta);
-	jsp1 = new JScrollPane(table1);
-	jsp2 = new JScrollPane(table2);
-	dm1 = new DefaultTableModel(null,head1);
-	dm2 = new DefaultTableModel(null,head2);
-	table1.setModel(dm1);
-	table2.setModel(dm2);
-	dtcr = new DefaultTableCellRenderer();
-	dtcr.setHorizontalAlignment(JLabel.CENTER);
-	table1.setDefaultRenderer(Object.class, dtcr);
-	table2.setDefaultRenderer(Object.class, dtcr);
-	
-	jf.getContentPane();
-	jf.setLayout(new GridLayout(2,2));
-	jf.setSize(1000,880);
-	jta.setFont(new Font("TimesRoman", Font.PLAIN, 18));
-	jf.add(jsp0);
-	jp.setLayout(null);
-	jp.add(jb);
-	jb.setBounds(230,150,200,100);
-	jp.add(jcb);
-	jcb.setBounds(50,130,130,150);
-	jf.add(jp);
-	jf.add(jsp1);
-	jf.add(jsp2);
+    /**
+     * æ„é€ æ–¹æ³•åˆå§‹åŒ–ç•Œé¢
+     */
+    public Main() {
+        jf = new JFrame();
+        jf.setTitle("è¯æ³•åˆ†æå™¨");
+        jta = new JTextArea(10, 10);
+        jta.setLineWrap(true);
+        jta.setWrapStyleWord(true);
+        jb = new JButton("è¯æ³•åˆ†æ");
+        jcb = new JCheckBox("ä¸­æ–‡æ˜¾ç¤ºå•è¯ç±»åˆ«");
+        jp = new JPanel();
 
-	jb.addActionListener(this);
-	jf.setLocationRelativeTo(null);
-	jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	jf.setResizable(false);
-	jf.setVisible(true);
-	}
-	public static void main(String[] args) {
-		new Main();
-	}
-	
-	public void actionPerformed(ActionEvent e) {
-		this.analyzer();
-		dm1.setRowCount(0);
-		dm2.setRowCount(0);
-		boolean iss = jcb.isSelected();
-		for(int a = 0;a<al.size();a++){
-			String strr[] = (String[]) al.get(a);
+        table1 = new JTable();
+        table2 = new JTable();
+        jsp0 = new JScrollPane(jta);
+        jsp1 = new JScrollPane(table1);
+        jsp2 = new JScrollPane(table2);
+        dm1 = new DefaultTableModel(null, head1);
+        dm2 = new DefaultTableModel(null, head2);
+        table1.setModel(dm1);
+        table2.setModel(dm2);
+        dtcr = new DefaultTableCellRenderer();
+        dtcr.setHorizontalAlignment(JLabel.CENTER);
+        table1.setDefaultRenderer(Object.class, dtcr);
+        table2.setDefaultRenderer(Object.class, dtcr);
+
+        jf.getContentPane();
+        jf.setLayout(new GridLayout(2, 2));
+        jf.setSize(1000, 880);
+        jta.setFont(new Font("TimesRoman", Font.PLAIN, 18));
+        jf.add(jsp0);
+        jp.setLayout(null);
+        jp.add(jb);
+        jb.setBounds(230, 150, 200, 100);
+        jp.add(jcb);
+        jcb.setBounds(50, 130, 130, 150);
+        jf.add(jp);
+        jf.add(jsp1);
+        jf.add(jsp2);
+
+        jb.addActionListener(this);
+        jf.setLocationRelativeTo(null);
+        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jf.setResizable(false);
+        jf.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new Main();
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        Analyzer alz = new Analyzer();
+        alz.analyzer(jta.getText());
+        dm1.setRowCount(0);
+        dm2.setRowCount(0);
+        boolean needConvert = jcb.isSelected();
+        for (String[] strr : alz.getWords()) {
 //			System.out.println(strr[0]+"  "+strr[1]+"  "+strr[2]);
-			if(iss)
-			strr[1] = converter(Integer.parseInt(strr[1]));
-			dm1.addRow(strr);
-		}		
-//		System.out.println("---------------");	
-		for(int a = 0;a<error.size();a++){
-			String strr[] = (String[]) error.get(a);
-//			System.out.println(strr[0]+"ĞĞ"+"  "+strr[1]);
-			dm2.addRow(strr);
-		}
-//		System.out.println("----end----");		
-	}
-	/**
-	 * ÅĞ¶ÏÊÇ·ñÎªÊı¾İÀàĞÍ¹Ø¼ü×Ö
-	 * @param str
-	 * @return boolean
-	 */
-	boolean Dkeyword(String str){
-	    for(int i = 0;i<Dkeyword.length;i++){
-	    	if(str.matches(Dkeyword[i])){
-	    		return true;
-	    	}
-	    }
-		return false;
-	}
-	/**
-	 * ÅĞ¶ÏÊÇ·ñÎª´æ´¢ÀàĞÍ¹Ø¼ü×Ö
-	 * @param str
-	 * @return boolean
-	 */
-	boolean Skeyword(String str){
-	    for(int i = 0;i<Skeyword.length;i++){
-	    	if(str.matches(Skeyword[i])){
-	    		return true;
-	    	}
-	    }
-		return false;
-	}
-	/**
-	 * ÅĞ¶ÏÊÇ·ñÎª¿ØÖÆÓï¾ä¹Ø¼ü×Ö
-	 * @param str
-	 * @return boolean
-	 */
-	boolean control(String str){
-	    for(int i = 0;i<control.length;i++){
-	    	if(str.matches(control[i])){
-	    		return true;
-	    	}
-	    }
-		return false;
-	}
-	/**
-	 * ÅĞ¶ÏÊÇ·ñÎªÆäËûÀàĞÍ¹Ø¼ü×Ö
-	 * @param str
-	 * @return boolean
-	 */
-	boolean Okeyword(String str){
-	    for(int i = 0;i<Okeyword.length;i++){
-	    	if(str.matches(Okeyword[i])){
-	    		return true;
-	    	}
-	    }
-		return false;
-	}
-	/**
-	 * ÅĞ¶ÏÌáÈ¡»º³åÇøÄÚÈİµÄÊ±»ú£¬¼´¸Ã×Ö·û×÷Îª»º³åÇøÊÇ·ñĞèÒªÌáÈ¡µÄ±êÖ¾
-	 * @param ch
-	 * @return boolean
-	 */
-	boolean NotTailOfErrorOrWord(char ch){
-		if(ch!='|' && ch!='[' && ch!=']' && ch!='\t' && ch!='\n' && ch!='\"' && ch!='-' && !(ch+"").matches("[,| |<|=|;|(|)|{|}|+|*|/|%|&|:|']"))
-			return true;
-		return false;
-	}
-	/**
-	 * ²éÕÒ¹Ø¼ü×ÖÖĞµÄÀàĞÍ£¬ÓĞÕÒµ½Ôò·µ»Ø¶ÔÓ¦ÀàĞÍ
-	 * @param str
-	 * @return int
-	 */
-	int search(String str){
-		if(Dkeyword(str)){
-			return 1;
-		}
-		else if(Skeyword(str)){
-			return 2;
-		}
-		else if(Okeyword(str)){
-			return 3;
-		}
-		else if(control(str)){
-			return 4;
-		}
-		return 0;
-	}	
-	/**
-	 * Ä¬ÈÏµ¥´ÊÀàĞÍÊÇÓÃÊı×Ö±£´æ£¬¸Ã·½·¨¿ÉÒÔ×ª³ÉÖĞÎÄ
-	 * @param i
-	 * @return
-	 */
-	String converter(int i){
-		switch(i){
-		case 1:
-			return "Êı¾İÀàĞÍ¹Ø¼ü×Ö";
-		case 2:
-			return "´æ´¢ÀàĞÍ¹Ø¼ü×Ö";
-		case 3:
-			return "ÆäËû¹Ø¼ü×Ö";
-		case 4:
-			return "¿ØÖÆÓï¾ä¹Ø¼ü×Ö";
-		case 6:
-			return "±êÊ¶·û";
-		case 7:
-			return "¹ØÏµÔËËã·û";
-		case 8:
-			return "ÏàµÈÔËËã·û";
-		case 9:
-			return "¸³ÖµÔËËã·û";
-		case 10:
-			return "Âß¼­ÔËËã·û";
-		case 11:
-			return "ËãÊıÔËËã·û";
-		case 12:
-			return "µ¥Ä¿ÔËËã·û";
-		case 13:
-			return "10½øÖÆÕûÊı";
-		case 14:
-			return "½ç·û";
-		case 15:
-			return "·ÖºÅ";
-		case 16:
-			return "Ã°ºÅ";
-		case 17:
-			return "¶ººÅ";
-		case 20:
-			return "ÒıºÅ¼äµÄÄÚÈİ";
-		case 21:
-			return "¸¡µãÊı";
-		case 22:
-			return "16½øÖÆÕûÊı";
-		}
-		return "ÕÒ²»µ½";
-	}
-	/**
-	 * ´Ê·¨·ÖÎöÆ÷
-	 */
-	void analyzer(){
-		String codes = jta.getText(); //ÕâÀï»á°ÑJTextAeraµÄËùÓĞÄÚÈİ¶ÁÈ¡³ÉÒ»¸ö×Ö·û´®
-		al = new ArrayList<String[]>();  //ArrayList´æµ¥´Ê
-		error = new ArrayList<String[]>();   //ArrayList´æ´íÎó
-		int line = 1;   //µ±Ç°ĞĞÊı£¬Ä¬ÈÏµÚÒ»ĞĞ
-		int num = 1;    //µÚnum¸ö±»Ê¶±ğ³öÀ´µÄµ¥´Ê£¬Ä¬ÈÏÊÇ1
-		int p = 0;      //×÷ÎªÓÎ±ê£¬´ÓµÚÒ»¸öÔªËØ¿ªÊ¼£¬Öğ¸ö±éÀúÕû¸öString codes
-		int len = codes.length();   //»ñÈ¡String codesµÄ³¤¶È£¬ÒÔ±ãÔ¤ÅĞ½áÎ²£¬ÌáÇ°×ö´¦ÀíÒÔ·À³ö´í
-		String c = "";   //»º³åÇø
-		char ch;         //ÓÎ±êÖ¸ÏòµÄ×Ö·û»á´æµ½ÕâÀï
-		short status = 0;      //¼ÇÂ¼Ä³¸ö×´Ì¬£¬¹²ÓĞ0-10¸ö×´Ì¬£¬0ÊÇ»º³åÇøÃ»ÓĞ¶ÁÈ¡ÄÚÈİµÄ×´Ì¬£¬1-10ÊÇ¶ÁÈ¡ÖĞ
-		boolean isError = false; //ÅĞ¶ÏÒıºÅ¼äÄÚÈİÊÇ·ñÓĞ´í
-		int hang = 0; //ÒıºÅ²¿·Ö×¨ÓÃµÄĞĞÊı¼ÇÂ¼£¬ÔÚ×´Ì¬9¡¢10ÖĞÅäºÏlineÊ¹ÓÃ
-		while(p<len){
-			ch = codes.charAt(p);  //¸ù¾İÓÎ±ê¶ÁÈ¡×Ö·û
-//			System.out.println(ch+"  "+status);
-			if(0==status) //Èç¹û×´Ì¬ÊÇ0£¬¼´»º³åÇøÎª¿Õ
-				{  
-				if(ch=='\n'){   //Óöµ½»Ø³µ·û¾ÍĞĞÊı×ÔÔö
-					line++;
-				}
-				else if(ch==' '||ch=='\t'){
-					;     //¿Õ¸ñÂÔ¹ı
-				}
-			    else if((ch+"").matches("[a-zA-Z]")){   //µÚÒ»¸ö¶ÁÈëµÄ×Ö·ûÊÇ×ÖÄ¸£¬½øÈë×´Ì¬1
-					status = 1; //¹Ø¼ü×Ö»òÕß²¿·Ö±êÊ¶·û
-				}
-				else if(ch=='_'){        //µÚÒ»¸ö¶ÁÈëµÄ×Ö·ûÊÇÏÂ»®Ïß£¬½øÈë×´Ì¬2
-					status = 2; //±êÊ¶·û
-				}
-				else if(ch=='<' || ch=='>'){      //µÚÒ»¸ö¶ÁÈëµÄ×Ö·ûÊÇ>»òÕß<£¬½øÈë×´Ì¬3
-					c+=ch;                   //´æÈë»º³åÇø
-					if(p+1==len){            //Èç¹ûÊÇ×îºóÒ»¸ö×Ö·ûÁË£¬ÄÇ¾ÍÌáÈ¡
-						String str[] = {num+"",8+"",c};
-						al.add(str);
-					}
-					else{                     //·ñÔò½øÈë×´Ì¬3,²¢ÇÒ°ÑÓÎ±êºóÒÆ£¬Ìø¹ıÒ»´ÎÑ­»·£¬ÔÚÏÂ´ÎÑ­»·Ê±¶ÁÏÂÒ»¸ö×Ö·û£¨²»È»Ö±½Ó½øÈëºóÃæµÄ×´Ì¬3¾Í´íÁË£©
-						status =3;
-						p++;
-						continue;
-					}
-				}
-				else if(ch=='=' || ch=='!'){   //Èç¹ûµÚÒ»¸ö×Ö·ûÊÇ=»òÕß!
-					c+=ch;        //´æ»º³åÇø
-					if(p+1==len){         //Èç¹ûÒÑ¾­ÊÇ×îºóÒ»¸ö×Ö·ûÁË
-						int k =0;
-						if(ch=='='){     //ÊÇ=ÔòÀàĞÍ9
-							k=9;
-						}
-						else{
-							k=10;         //·ñÔòÊÇ!£¬ÔòÀàĞÍ10
-						}
-						String str[] = {num+"",k+"",c};
-						al.add(str);
-					}
-					else{             //·ñÔò½øÈë×´Ì¬4
-						status =4;
-						p++;
-						continue;
-					}
-				}
-				else if(ch=='&' || ch=='|'){             //&»òÕß|¿ªÍ·
-					c+=ch;
-					if(p+1==len){            //ÊÇÄ©Î²ÁË£¬¾ÍÌáÈ¡»º³åÇø£¬´æÎªÀàĞÍ10
-						String str[] = {num+"",10+"",c};
-						al.add(str);
-					}
-					else{
-						status = 5;         //·ñÔò½øÈë×´Ì¬5
-						p++;
-						continue;
-					}
-				}
-				else if(ch=='-' || (ch+"").matches("[+|*|%|/]")){   //Èç¹ûÊÇ  - + * % /¿ªÍ·
-					c+=ch;
-					if(p+1==len){
-						String str[] = {num+"",11+"",c};
-						al.add(str);
-					}
-					else{
-						status =6;
-						p++;
-						continue;
-					}
-				}
-				else if((ch+"").matches(number)){             //Êı×Ö¿ªÍ·
-					status = 7;
-				}
-				else if(ch=='[' || ch==']' || (ch+"").matches(jiefu)){         //½ç·û
-					c+=ch;
-					String str[] = {num+"",14+"",c};
-					al.add(str);
-					num++;
-					c="";
-				}
-				else if(ch==';'){
-					c+=ch;
-					String str[] = {num+"",15+"",c};
-					al.add(str);
-					num++;
-					c="";
-				}
-				else if(ch==':'){
-					c+=ch;
-					String str[] = {num+"",16+"",c};
-					al.add(str);
-					num++;
-					c="";
-				}
-				else if(ch==','){
-					c+=ch;
-					String str[] = {num+"",17+"",c};
-					al.add(str);
-					num++;
-					c="";
-				}
-				else if(ch=='\''){
-					String str[] = {num+"","14",""+ch};
-					al.add(str);
-					num++;
-					status = 9;
-					p++;
-					if(p==len){
-						String strs[] = {line+"","È±ÉÙÓÒµ¥ÒıºÅ"};
-						error.add(strs);
-					}
-					continue;
-				}
-				else if(ch=='\"'){
-					String str[] = {num+"","14",""+ch};
-					al.add(str);
-					num++;
-					status = 10;
-					p++;
-					if(p==len){
-						String strs[] = {line+"","È±ÉÙÓÒË«ÒıºÅ"};
-						error.add(strs);
-					}
-					continue;
-				}
-				else{
-					status=8;
-				}
-			}
-			switch(status)
-			{	
-			case 1:          //Çé¿ö1 £¬×ÖÄ¸¿ªÍ·£¬¿ÉÄÜÊÇ±êÊ¶·û¡¢¹Ø¼ü×Ö»òÕß´íÎó
-				{
-				boolean pop = false;
-				if( NotTailOfErrorOrWord(ch) ){
-					c+=ch;
-					if(p+1==len){   //µ½Ä©Î²
-						pop = true;
-					}
-				}
-				else{   //²»Âú×ã
-					pop = true;
-					p--;
-				}
-				if(pop){
-					int k = search(c);
-					if(k!=0){
-						String str[] = {num+"",k+"",c};
-						al.add(str);
-						num++;
-					}
-					else if(c.matches("^[a-z|A-Z][a-zA-Z0-9_]*")){
-						String str[] = {num+"",6+"",c};
-						al.add(str);
-						num++;
-					}
-					else{
-						String str[] = {line+"",c};
-						error.add(str);
-					}
-					c="";
-					status=0;
-				}
-			}
-			break;
-			case 2:{          //Çé¿ö2£¬ÏÂ»®Ïß¿ªÍ·£¬¿ÉÄÜÊÇ±êÊ¶·û»òÕß´íÎó
-				boolean pop = false;
-				if(NotTailOfErrorOrWord(ch)){
-					c+=ch;
-					if(p+1==len){
-						pop = true;
-					}
-				}
-				else{
-					pop = true;
-					p--;
-				}
-				if(pop){
-					if(c.matches("[a-zA-Z0-9_]+")){
-						String str[] = {num+"",6+"",c};
-						al.add(str);
-						num++;
-					}
-					else{
-						String str[] = {line+"",c};
-						error.add(str);
-					}
-					c="";
-					status=0;
-				}
-			}
-			break;
-			case 3:{          //Çé¿ö3£¬¹ØÏµÔËËã·û
-				boolean pop = false;
-				if(ch=='='){
-					c+=ch;
-					pop = true;
-				}
-				else{
-					pop = true;
-					p--;
-				}
-				if(pop){
-					String str[] = {num+"",7+"",c};
-					al.add(str);
-					num++;
-					c="";
-					status=0;
-				}
-			}
-			break;
-			case 4:{          //Çé¿ö4£¬=ºÅ¡¢£¡ºÅ¿ªÍ·£¬¿ÉÄÜÊÇÏàµÈÔËËã·û£¬Ò²¿ÉÄÜÊÇµ¥¸öµÄÂß¼­ÔËËã·û£¡£¬»òÕß¸³ÖµºÅ=
-				boolean pop = false;
-				if(ch=='='){
-					c+=ch;
-					pop = true;
-				}
-				else{
-					pop = true;
-					p--;
-				}
-				if(pop){
-					int k = 0;
-					if(c.contentEquals("!")){
-						k=10;
-					}
-					else if(c.contentEquals("=")){
-						k=9;
-					}
-					else{
-						k=8;
-					}
-					
-					String str[] = {num+"",k+"",c};
-					al.add(str);
-					num++;
-					c="";
-					status=0;
-				}
-			}
-			break;
-			case 5:          //Çé¿ö5£¬&ºÍ|¿ªÍ·£¬¿ÉÄÜÊÇÂß¼­ÔËËã·û£¬Ò²¿ÉÄÜÊÇ¸³ÖµÔËËã·û&=»òÕß|=
-				{
-				boolean pop = false;
-				if((c.contentEquals("&") && ch=='&') || (c.contentEquals("|") && ch=='|') || ch=='=' ){
-					c+=ch;
-					pop = true;
-				}
-				else{
-					pop = true;
-					p--;
-				}
-				if(pop){
-					int k = 0;
-					if(ch=='='){
-						k=9;
-					}
-					else{
-						k=10;
-					}
-					String str[] = {num+"",k+"",c};
-					al.add(str);
-					num++;
-					c="";
-					status=0;
-				}
-			}
-			break;
-			case 6:          //Çé¿ö6£¬+¡¢-¡¢*¡¢/¡¢%¿ªÍ·£¬¿ÉÄÜÊÇµ¥×Ö·ûµÄÔËËã·û£¬¿ÉÄÜÊÇ¸³ÖµÔËËã·û£¬ÀıÈç+=£¬Ò²¿ÉÄÜÊÇµ¥Ä¿ÔËËã·û++¡¢--
-				{
-				boolean pop = true;
-				int k = 0;
-				if(ch=='='){
-					c+=ch;
-					pop = true;
-					k=9;
-				}
-				else if(c.contentEquals("+") && ch=='+'){
-					c+=ch;
-					pop = true;
-					k=12;
-				}
-				else if(c.contentEquals("-") && ch=='-'){
-					c+=ch;
-					pop = true;
-					k=12;
-				}
-				else{
-					pop = true;
-					k=11;
-					p--;
-				}
-				if(pop){
-					String str[] = {num+"",k+"",c};
-					al.add(str);
-					num++;
-					c="";
-					status=0;
-				}
-			}
-			break;
-			case 7:          //Çé¿ö7£¬Êı×Ö¿ªÍ·£¬¿ÉÄÜÊÇÊı×Ö(Ê®Áù½øÖÆÕûÊı£¬Ê®½øÖÆµÄÕûÊı¡¢¸¡µãÊı)£¬Ò²¿ÉÄÜÊÇ´íÎó£¬±ÈÈç00ÊÇ´íÎó£¬0aÒ²ÊÇ´íÎó
-				{
-				boolean pop = false;
-				if( NotTailOfErrorOrWord(ch) ){
-					c+=ch;
-					if(p+1==len){   //µ½Ä©Î²
-						pop = true;
-					}
-				}
-				else{   //²»Âú×ã
-					pop = true;
-					p--;
-				}
-				if(pop){
-					if(c.contentEquals("0")||c.matches("[1-9][0-9]*")){
-						String str[] = {num+"","13",c};
-						al.add(str);
-						num++;
-					}
-					else if(c.matches("[1-9]+[.][0-9]+") || c.matches("[0][.][0-9]+")){
-						String str[] = {num+"","21",c};
-						al.add(str);
-						num++;
-					}
-					else if(c.matches("[0][x|X][0-9|a-f|A-F][0-9|a-f|A-F]")){
-						String str[] = {num+"","22",c};
-						al.add(str);
-						num++;
-					}
-					else{
-						String str[] = {line+"",c};
-						error.add(str);
-					}
-					c="";
-					status=0;
-				}
-			}
-			break;
-			case 8:          //Çé¿ö8£¬²»ÊÇÈÎºÎµ¥´ÊµÄ¿ªÍ·µÄ¿ªÍ·£¬¾ùÎª´íÎó
-				{
-				boolean pop = false;
-				if( NotTailOfErrorOrWord(ch) ){
-					c+=ch;
-					if(p+1==len){
-						pop = true;
-					}
-				}
-				else{
-					pop = true;
-					p--;
-				}
-				if(pop){
-					String str[] = {line+"",c};
-					error.add(str);
-					c="";
-					status=0;
-				}
-			}
-			break;
-			case 9:          //Çé¿ö9£¬µ¥ÒıºÅ¿ªÍ·£¬°ÑÒıºÅÄÚµÄÄÚÈİµ±×öµ¥´Ê£¬ÒıºÅÒ²ÊÇµ¥´Ê¡£Èç¹ûÄÚÈİÖĞµÄÒıºÅÇ°ÓĞ\£¬Ôò¸ÃÒıºÅ×÷ÎªÄÚÈİµÄÒ»²¿·Ö
-				{
-				if(ch!='\'' || (c!="" && c.charAt(c.length()-1)=='\\') ){  //·Çµ¥ÒıºÅ»òÕßÇ°¸ö×Ö·ûÊÇ·´Ğ±¸Ü
-//					System.out.println("123");
-					if(ch!='\n')  //²»ÊÇ»»ĞĞ·û£¬Ôò¶ÁÈë»º³åÇø
-					c+=ch;
-					else{     //·ñÔò±¨´í£¬È»ºóline×ÔÔö
-					String str[] = {(hang+line)+"","ÒıºÅÄÚ²»µÃÓĞ»»ĞĞ"};
-					error.add(str);
-//					line++;
-					hang++;
-					isError = true;
-					}
-					if(p+1==len){ //Ä©Î²µÄ»°ÌáÇ°´¦Àí
-						String str[] = {line+"",c};
-						error.add(str);
-					    c="";
-					    status=0;
-					    isError = false;
-					}
-				}
-				else{  //·ñÔò»º³åÇø²»ÊÇ¿ÕµÄ»°£¬¾ÍÌáÈ¡
-					if(c!=""&&!c.contentEquals("\n")){
-						if(!isError){
-							String str[] = {num+"","20",c};
-//							System.out.println("123");
-							num++;
-							al.add(str);
-						}
-						else{
-							String str[] = {line+"",c};
-							line+=hang;
-							hang = 0;
-							error.add(str);
-							isError = false;
-						}
-					}
-					String str2[] = {num+"","14",""+ch};   //Í¬Ê±°Ñµ±Ç°µÄÒıºÅÒ²´æÆğÀ´
-					al.add(str2);
-					num++;
-					c="";
-					status=0;
-				}
-			}
-			break;
-			case 10:          //Çé¿ö10£¬ÓëÇé¿ö9ÀàËÆ£¬ÕâÀïÊÇË«ÒıºÅ
-				{
-				if(ch!='\"' || (c!="" && c.charAt(c.length()-1)=='\\') ){
-//					System.out.println(ch+"888888888888");
-					if(ch!='\n')
-					c+=ch;
-					else{
-					String str[] = {line+"","ÒıºÅÄÚ²»µÃÓĞ»»ĞĞ"};
-					error.add(str);
-//					line++;
-					hang++;
-					isError = true;
-					}
-					if(p+1==len){
-						String str[] = {line+"",c};
-						error.add(str);
-					    c="";
-					    status=0;
-					    isError = false;
-					}
-				}
-				else{
-					if(c!=""&&!c.contentEquals("\n")){
-					  if(!isError){
-						  String str[] = {num+"","20",c};
-						  num++;
-						  al.add(str);
-					  }
-					  else{
-						  String str[] = {line+"",c};
-							line+=hang;
-							hang = 0;
-							error.add(str);
-							isError = false;
-					  }
-					}
-					String str2[] = {num+"","14",""+ch};
-					al.add(str2);
-					num++;
-					c="";
-					status=0;
-				}
-			}
-				break;
-		}
-
-			p++;
-		}
-	}
+            if (needConvert)
+                strr[1] = Config.word_name_map.get(Integer.parseInt(strr[1]));
+            if (strr[1] == null) {
+                strr[1] = "æ‰¾ä¸åˆ°";
+            }
+            dm1.addRow(strr);
+        }
+//		System.out.println("---------------");
+        for (String[] strr : alz.getErrors()) {
+//			System.out.println(strr[0]+"è¡Œ"+"  "+strr[1]);
+            dm2.addRow(strr);
+        }
+//		System.out.println("----end----");
+    }
 }
